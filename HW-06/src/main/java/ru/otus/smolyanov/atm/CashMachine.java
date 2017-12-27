@@ -6,29 +6,19 @@ package ru.otus.smolyanov.atm;
  * Home work 06 - ATM
  */
 
-public class CashMachine {
+import java.util.Collection;
 
-  public void start() {
+public interface CashMachine {
 
-  }
+  // старт
+  void start();
 
-  public void showMenu(){
+  // узнать баланс
+  long getBalance();
 
-  }
+  // снять наличные
+  Collection<Banknote> cachWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException;
 
-  public void cash(){
-
-  }
-
-  public int cashWithdrawal(int amount){
-    return 0;
-  }
-
-  public void cashDeposit() {
-
-  }
-
-  public void getBalance() {
-
-  }
+  // внести наличные
+  void cahsEntry(Collection<Banknote> banknoteBundle);
 }
