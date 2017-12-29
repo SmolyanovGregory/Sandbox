@@ -11,9 +11,7 @@ import ru.otus.smolyanov.atm.*;
 public class Main {
 
   private void run() {
-    CashMachineShellImpl cashMachineShell = new CashMachineShellImpl(new CashMachineImpl());
-    cashMachineShell.setInputStream(System.in);
-    cashMachineShell.setPrintStream(System.out);
+    CashMachineShellImpl cashMachineShell = new CashMachineShellImpl(new CashMachineImpl(), System.in, System.out);
     cashMachineShell.start();
   }
 
