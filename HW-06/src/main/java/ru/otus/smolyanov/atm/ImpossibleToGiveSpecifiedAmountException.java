@@ -8,6 +8,6 @@ package ru.otus.smolyanov.atm;
 
 public class ImpossibleToGiveSpecifiedAmountException extends Exception {
   public ImpossibleToGiveSpecifiedAmountException() {
-    super("The ATM cannot give the specified amount.");
+    super("The ATM cannot issue the specified amount.");
   }
 }

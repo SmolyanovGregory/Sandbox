@@ -22,7 +22,6 @@ public class CashMachineImpl implements CashMachine {
   @Override
   public void start() {
     initializeStorage();
-
   }
 
   @Override
@@ -38,41 +37,43 @@ public class CashMachineImpl implements CashMachine {
   public Collection<Banknote> cachWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException {
     Collection<Banknote> result = new LinkedList<>();
 
-    if (getBalance() >= amount) {
-      long collectedSum = 0;
-      Object[] storageCells = storage.keySet().stream().sorted(Comparator.reverseOrder()).toArray();
+    if (amount > 0) {
+      if (getBalance() >= amount) {
+        long collectedSum = 0;
+        Object[] storageCells = storage.keySet().stream().sorted(Comparator.reverseOrder()).toArray();
 
-      for (Object obj: storageCells) {
-        Banknote banknote = (Banknote) obj;
-        //System.out.println("--->"+cell.name()+" "+cell.getdDenomination());
+        for (Object obj : storageCells) {
+          Banknote banknote = (Banknote) obj;
 
-        if (banknote.getdDenomination() <= amount) {
-          int count = storage.get(banknote);
-          while (count > 0 && (amount - collectedSum) >= banknote.getdDenomination()) {
-            result.add(banknote);
-            collectedSum += banknote.getdDenomination();
-            count--;
+          if (banknote.getdDenomination() <= amount) {
+            int count = storage.get(banknote);
+            while (count > 0 && (amount - collectedSum) >= banknote.getdDenomination()) {
+              result.add(banknote);
+              collectedSum += banknote.getdDenomination();
+              count--;
+            }
+
+            if (storage.get(banknote) != count)
+              storage.put(banknote, count);
           }
-
-          if (storage.get(banknote) != count)
-            storage.put(banknote, count);
         }
-      }
 
-      // rollback
-      if (collectedSum < amount) {
-        for (Banknote banknote: result) {
-          storage.put(banknote, storage.get(banknote)+1);
+        // rollback
+        if (collectedSum < amount) {
+          for (Banknote banknote : result) {
+            storage.put(banknote, storage.get(banknote) + 1);
+          }
+          throw new ImpossibleToGiveSpecifiedAmountException();
         }
-        throw new ImpossibleToGiveSpecifiedAmountException();
-      }
+      } else
+        throw new NotEnoughMoneyException();
     } else
-      throw new NotEnoughMoneyException();
+      throw new ImpossibleToGiveSpecifiedAmountException();
     return result;
   }
 
   @Override
-  public void cahsEntry(Collection<Banknote> banknoteBundle) {
+  public void cashEntry(Collection<Banknote> banknoteBundle) {
     for (Banknote banknote : banknoteBundle) {
       storage.put(banknote, storage.get(banknote)+1);
     }
@@ -84,10 +85,6 @@ public class CashMachineImpl implements CashMachine {
     for(Banknote banknote : Banknote.values()) {
       storage.put(banknote, 0);
     }
-  }
 
-//  private boolean isSumPossibleForWithdrawal(long amount) {
-//    boolean result = false;
-//    return result;
-//  }
+  }
 }

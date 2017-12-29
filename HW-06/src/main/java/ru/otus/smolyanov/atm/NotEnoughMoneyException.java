@@ -8,6 +8,6 @@ package ru.otus.smolyanov.atm;
 
 public class NotEnoughMoneyException extends Exception {
   public NotEnoughMoneyException() {
-    super("The ATM does not have enough money to issue the amount.");
+    super("The ATM does not have enough money to issue the specified amount.");
   }
 }

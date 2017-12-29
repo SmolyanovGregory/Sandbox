@@ -20,5 +20,5 @@ public interface CashMachine {
   Collection<Banknote> cachWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException;
 
   // внести наличные
-  void cahsEntry(Collection<Banknote> banknoteBundle);
+  void cashEntry(Collection<Banknote> banknoteBundle);
 }
