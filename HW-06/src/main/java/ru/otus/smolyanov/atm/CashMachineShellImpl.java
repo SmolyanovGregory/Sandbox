@@ -17,25 +17,15 @@ public class CashMachineShellImpl implements CashMachineShell {
   private final String COMMAND_BALANCE = "1";
   private final String COMMAND_WITHDRAWAL = "2";
   private final String COMMAND_ENTRY = "3";
-  private final String START_MENU = "------------------------------\n" +
-                                    "Type '"+COMMAND_BALANCE+"' for show the balance\n" +
-                                    "Type '"+COMMAND_WITHDRAWAL+"' for withdrawal cash\n" +
-                                    "Type '"+COMMAND_ENTRY+"' for entry cash"+
-                                    "\n------------------------------";
-  private final String NOT_ACCEPTED = "Banknotes of the following denominations are not accepted:";
-  private final String ENTRY_CASH = "Please entry cash: ";
-  private final String TAKE_MONEY = "Please take money: ";
-  private final String TYPE_AMOUNT = "Please type amount: ";
-  private final String CURRENT_BALANCE = "Current balance: ";
-  private final String INCORRECT_COMMAND = "Incorrect command: ";
 
-  private Scanner scanner;
-  private InputStream inputStream;
-  private PrintStream printStream;
-  private CashMachine cashMachine;
+  private final Scanner scanner;
+  private final PrintStream printStream;
+  private final CashMachine cashMachine;
 
-  public CashMachineShellImpl(CashMachine cashMachine) {
+  public CashMachineShellImpl(CashMachine cashMachine, InputStream inputStream, PrintStream printStream) {
     this.cashMachine = cashMachine;
+    scanner = new Scanner(inputStream);
+    this.printStream = printStream;
   }
 
   @Override
@@ -45,23 +35,15 @@ public class CashMachineShellImpl implements CashMachineShell {
     startListener();
   }
 
-  @Override
-  public void setPrintStream(PrintStream printStream) {
-    this.printStream = printStream;
-  }
-
-  @Override
-  public void setInputStream(InputStream inputStream) {
-    this.inputStream = inputStream;
-    scanner = new Scanner(this.inputStream);
-  }
-
   private void showStartMenu() {
-    printStream.println(START_MENU);
+    printStream.println("------------------------------\n" +
+        "Type '"+COMMAND_BALANCE+"' for show the balance\n" +
+        "Type '"+COMMAND_WITHDRAWAL+"' for withdrawal cash\n" +
+        "Type '"+COMMAND_ENTRY+"' for entry cash"+
+        "\n------------------------------");
   }
 
   private void startListener() {
-
     while (true) {
       showStartMenu();
       dispatchCommand(getUserEntry());
@@ -80,22 +62,22 @@ public class CashMachineShellImpl implements CashMachineShell {
         processCommandEntry();
         break;
       default:
-        printStream.println(INCORRECT_COMMAND+command);
+        printStream.println("Incorrect command: "+command);
         break;
     }
   }
 
   private void processCommandBalance(){
-    printStream.println(CURRENT_BALANCE+cashMachine.getBalance());
+    printStream.println("Current balance: "+cashMachine.getBalance());
   }
 
   private void processCommandWithdrawal(){
-    printStream.println(TYPE_AMOUNT);
+    printStream.println("Please type amount: ");
 
     long amount = Long.valueOf(getUserEntry());
     try {
-      Collection<Banknote> banknoteBundle = cashMachine.cachWithdrawal(amount);
-      printStream.println(TAKE_MONEY+banknoteBundleToString(banknoteBundle)+"\n");
+      Collection<Banknote> banknoteBundle = cashMachine.cashWithdrawal(amount);
+      printStream.println("Please take money: "+banknoteBundleToString(banknoteBundle)+"\n");
 
     } catch (NotEnoughMoneyException | ImpossibleToGiveSpecifiedAmountException e) {
       printStream.println(e.getMessage());
@@ -103,7 +85,7 @@ public class CashMachineShellImpl implements CashMachineShell {
   }
 
   private void processCommandEntry() {
-    printStream.println(ENTRY_CASH);
+    printStream.println("Please entry cash: ");
 
     Collection<String> notSupportedBanknotes = new LinkedList<>();
     Collection<Banknote> banknoteBundle = new LinkedList<>();
@@ -126,8 +108,8 @@ public class CashMachineShellImpl implements CashMachineShell {
     cashMachine.cashEntry(banknoteBundle);
 
     if (!notSupportedBanknotes.isEmpty()) {
-      StringBuffer sb = new StringBuffer();
-      sb.append(NOT_ACCEPTED);
+      StringBuilder sb = new StringBuilder();
+      sb.append("Banknotes of the following denominations are not accepted:");
       for(String banknote: notSupportedBanknotes) {
         sb.append(" ").append(banknote);
       }
@@ -140,7 +122,7 @@ public class CashMachineShellImpl implements CashMachineShell {
   }
 
   private String banknoteBundleToString(Collection<Banknote> banknoteBundle) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for (Banknote banknote : banknoteBundle) {
       if (result.length() > 0) {
          result.append(" ");

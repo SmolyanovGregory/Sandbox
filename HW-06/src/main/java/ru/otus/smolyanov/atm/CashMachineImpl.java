@@ -34,7 +34,7 @@ public class CashMachineImpl implements CashMachine {
   }
 
   @Override
-  public Collection<Banknote> cachWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException {
+  public Collection<Banknote> cashWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException {
     Collection<Banknote> result = new LinkedList<>();
 
     if (amount > 0) {

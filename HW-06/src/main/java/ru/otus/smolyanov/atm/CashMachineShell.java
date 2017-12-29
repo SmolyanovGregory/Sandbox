@@ -12,8 +12,4 @@ import java.io.InputStream;
 public interface CashMachineShell {
 
   void start();
-
-  void setPrintStream(PrintStream printStream);
-
-  void setInputStream(InputStream inputStream);
 }

@@ -15,7 +15,7 @@ public enum Banknote {
   TWO_HUNDRED(200),
   FIVE_HUNDRED(500);
 
-  private int denomination;
+  private final int denomination;
 
   Banknote(int denomination) {
     this.denomination = denomination;

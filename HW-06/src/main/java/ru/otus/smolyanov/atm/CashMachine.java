@@ -17,7 +17,7 @@ public interface CashMachine {
   long getBalance();
 
   // снять наличные
-  Collection<Banknote> cachWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException;
+  Collection<Banknote> cashWithdrawal(long amount) throws NotEnoughMoneyException, ImpossibleToGiveSpecifiedAmountException;
 
   // внести наличные
   void cashEntry(Collection<Banknote> banknoteBundle);
